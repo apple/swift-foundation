@@ -54,7 +54,10 @@ let package = Package(
             exact: "0.0.5"),
         .package(
             url: "https://github.com/apple/swift-syntax.git",
-            from: "509.0.2")
+            from: "509.0.2"),
+        .package(
+            url: "https://github.com/apple/swift-system",
+            from: "1.0.0")
     ],
     targets: [
         // Foundation (umbrella)
@@ -84,6 +87,7 @@ let package = Package(
             "_CShims",
             "FoundationMacros",
             .product(name: "_RopeModule", package: "swift-collections"),
+            .product(name: "SystemPackage", package: "swift-system"),
           ],
           cSettings: [
             .define("_GNU_SOURCE", .when(platforms: [.linux]))
