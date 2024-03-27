@@ -158,7 +158,7 @@ private func createTemporaryFile(at destinationPath: String, inPath: PathOrURL, 
             
             // The warning diligently tells us we shouldn't be using mktemp() because blindly opening the returned path opens us up to a TOCTOU race. However, in this case, we're being careful by doing O_CREAT|O_EXCL and repeating, just like the implementation of mkstemp.
             // Furthermore, we can't compatibly switch to mkstemp() until we have the ability to set fchmod correctly, which requires the ability to query the current umask, which we don't have. (22033100)
-            guard mktemp(templateFileSystemRep) != nil else {
+            guard _datashims_mktemp(templateFileSystemRep) != nil else {
                 throw CocoaError.errorWithFilePath(inPath, errno: errno, reading: false)
             }
             
