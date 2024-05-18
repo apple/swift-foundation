@@ -32,8 +32,6 @@ extension IntegerParseStrategy: ParseStrategy {
         let trimmedString = value._trimmingWhitespace()
         if let v = parser.parseAsInt(trimmedString) {
             return Format.FormatInput(v)
-        } else if let v = parser.parseAsDouble(trimmedString) {
-            return Format.FormatInput(clamping: Int64(v))
         } else {
             let exampleString = formatStyle.format(123)
             throw CocoaError(CocoaError.formatting, userInfo: [
@@ -52,9 +50,6 @@ extension IntegerParseStrategy: ParseStrategy {
         if let value = parser.parseAsInt(substr, upperBound: &upperBound) {
             let upperBoundInSubstr = String.Index(utf16Offset: upperBound, in: substr)
             return (upperBoundInSubstr, Format.FormatInput(value))
-        } else if let value = parser.parseAsInt(substr, upperBound: &upperBound) {
-            let upperBoundInSubstr = String.Index(utf16Offset: upperBound, in: substr)
-            return (upperBoundInSubstr, Format.FormatInput(clamping: Int64(value)))
         }
         return nil
     }
