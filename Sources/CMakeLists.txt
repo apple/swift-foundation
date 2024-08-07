@@ -14,9 +14,11 @@
 
 add_subdirectory(_FoundationCShims)
 
-# Disable the macro build on Windows until we can correctly build it for the host architecture
-if(NOT CMAKE_SYSTEM_NAME STREQUAL Windows)
-	add_subdirectory(FoundationMacros)
+# Macros are only useful for development, but not at runtime.
+option(SwiftFoundation_BUILD_MACROS "Include SwiftFoundation Macro Targets" ON)
+message(STATUS "Build macros: ${SwiftFoundation_BUILD_MACROS}")
+if(SwiftFoundation_BUILD_MACROS)
+  add_subdirectory(FoundationMacros)
 endif()
 
 add_subdirectory(FoundationEssentials)
