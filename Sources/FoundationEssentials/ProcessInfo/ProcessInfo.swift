@@ -21,6 +21,8 @@ import unistd
 import Glibc
 #elseif os(Windows)
 import WinSDK
+#elseif os(WASI)
+import WASILibc
 #endif
 
 #if !NO_PROCESS
@@ -389,7 +391,7 @@ extension _ProcessInfo {
             patch: Int(osVersionInfo.dwBuildNumber)
         )
 #else
-        return OperatingSystemVersion(majorVersion: -1, minorVersion: 0, patchVersion: 0)
+        return (major: -1, minor: 0, patch: 0)
 #endif
     }
 

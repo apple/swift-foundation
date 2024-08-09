@@ -27,6 +27,8 @@ import Glibc
 #elseif os(Windows)
 import CRT
 import WinSDK
+#elseif os(WASI)
+import WASILibc
 #endif
 
 #if !NO_FILESYSTEM
@@ -127,6 +129,10 @@ private func cleanupTemporaryDirectory(at inPath: String?) {
 
 /// Caller is responsible for calling `close` on the `Int32` file descriptor.
 private func createTemporaryFile(at destinationPath: String, inPath: PathOrURL, prefix: String, options: Data.WritingOptions) throws -> (Int32, String) {
+#if os(WASI)
+    // WASI does not have temp directories
+    throw CocoaError(.featureUnsupported)
+#else
     var directoryPath = destinationPath
     if !directoryPath.isEmpty && directoryPath.last! != "/" {
         directoryPath.append("/")
@@ -181,6 +187,7 @@ private func createTemporaryFile(at destinationPath: String, inPath: PathOrURL, 
             }
         }
     } while true
+#endif // os(WASI)
 }
 
 /// Returns `(file descriptor, temporary file path, temporary directory path)`
@@ -514,6 +521,7 @@ private func writeToFileAux(path inPath: PathOrURL, buffer: UnsafeRawBufferPoint
                 
                 cleanupTemporaryDirectory(at: temporaryDirectoryPath)
                 
+#if !os(WASI) // WASI does not support fchmod for now
                 if let mode {
                     // Try to change the mode if the path has not changed. Do our best, but don't report an error.
 #if FOUNDATION_FRAMEWORK
@@ -537,6 +545,7 @@ private func writeToFileAux(path inPath: PathOrURL, buffer: UnsafeRawBufferPoint
                     fchmod(fd, mode)
 #endif
                 }
+#endif // os(WASI)
             }
         }
     }
